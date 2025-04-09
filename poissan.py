@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# correlation between number of boats and manta presence at sunset or moonlight 
+# correlation between number mantas present and the absence of additional boats, during a moonlight tour, at high tide, with high (level 5) plankton levels 
 
 import pandas as pd
 import numpy as np
