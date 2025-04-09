@@ -8,10 +8,8 @@ from sklearn.preprocessing import LabelEncoder
 import statsmodels.formula.api as smf
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import PoissonRegressor
-import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
+
 
 # Load dataset
 data = pd.read_csv("Documents/pythonprojects/Mantadata1.csv")
