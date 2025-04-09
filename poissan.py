@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# correlation between number mantas present and the absence of additional boats, during a moonlight tour, at high tide, with high (level 5) plankton levels 
+# correlation between number of boats and manta presence at sunset or moonlight 
 
 import pandas as pd
 import numpy as np
@@ -8,8 +8,10 @@ from sklearn.preprocessing import LabelEncoder
 import statsmodels.formula.api as smf
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import PoissonRegressor
+import statsmodels.formula.api as smf
 import matplotlib.pyplot as plt
-
+import statsmodels.api as sm
+import statsmodels.formula.api as smf
 
 # Load dataset
 data = pd.read_csv("Documents/pythonprojects/Mantadata1.csv")
@@ -20,7 +22,7 @@ data['yboat'].replace({1:1, 2:0}, inplace=True)
 data.head()
 
 data['nboat'] = data['Boats']
-data['nboat'].replace({1:0, 2:1}, inplace=True)
+data['nboat'].replace({1:0, 2:2}, inplace=True)
 data.head()
 
 # columns for sunset verses moonlight manta tours 
@@ -35,21 +37,31 @@ data.head()
 data['high'] = data["High tide"]
 data.head()
 
-#data['low'] = data["Low tide"]
-
+data['low'] = data["Low tide"]
+data.head()
 
 data['plankton5'] = data['Plankton']
 data['plankton5'].replace({1:0, 2:0, 3:0, 4:0, 5:5}, inplace=True)
 data.head()
 
+data['plankton4'] = data['Plankton']
+data['plankton4'].replace({1:0, 2:0, 3:0, 4:4, 5:0}, inplace=True)
+data.head()
+
+data['plankton3'] = data['Plankton']
+data['plankton3'].replace({1:0, 2:0, 3:3, 4:0, 5:0}, inplace=True)
+data.head()
+
 #print(data.head())
 
-#substitute n/a values for 0 
 data['high'] = data['high'].fillna(0)
 data['Mantas'] = data['Mantas'].fillna(0)
 data['plankton5'] = data['plankton5'].fillna(0)
+data['plankton4'] = data['plankton4'].fillna(0)
+data['plankton3'] = data['plankton3'].fillna(0)
 
-x_train, x_test, y_train, y_test = train_test_split(data[["nboat", "moonlight", "high", 'plankton5']], data[["Mantas"]], test_size=0.2, shuffle=True)
+#X = df[['Boats', 'Plankton', 'Moon Phase', 'High tide', 'Low tide']]
+x_train, x_test, y_train, y_test = train_test_split(data[["nboat" , "high", 'low', 'moonlight','plankton5', 'plankton4', 'plankton3']], data[["Mantas"]], test_size=0.2, shuffle=True)
 
 pois = PoissonRegressor()
 pois.fit(x_train, y_train)
@@ -57,7 +69,7 @@ pois.fit(x_train, y_train)
 train2 = pd.concat([x_train, y_train], axis=1)
 train2.head()
 
-pois_reg = smf.poisson("Mantas ~ nboat + moonlight + high + plankton5", data=train2).fit()
+pois_reg = smf.poisson("Mantas ~ nboat + moonlight + high + low + plankton5 + plankton4 +plankton3", data=train2).fit()
 
 print ('coefficient: ', pois.coef_)
 print ('intercept: ', pois.intercept_)
@@ -69,12 +81,14 @@ error = np.subtract(y_test, y_pred)
 print ("error:" ,error.mean())
 print ('Summary: ',pois_reg.summary())
 
-# plot for goodness of fit 
 
 plt.plot(error)
 plt.xlabel('Residuals')
 plt.axhline(y=0, color='black', linestyle='-')
 plt.show()
 # = .144, off by .1 or so #!/usr/bin/env python3
+
+
+
 
 
