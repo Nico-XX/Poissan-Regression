@@ -45,13 +45,12 @@ data['plankton5'].replace({1:0, 2:0, 3:0, 4:0, 5:5}, inplace=True)
 data.head()
 
 #print(data.head())
-# continue to create columns for plankton levels 
+
+#substitute n/a values for 0 
 data['high'] = data['high'].fillna(0)
 data['Mantas'] = data['Mantas'].fillna(0)
 data['plankton5'] = data['plankton5'].fillna(0)
 
-
-#X = df[['Boats', 'Plankton', 'Moon Phase', 'High tide', 'Low tide']]
 x_train, x_test, y_train, y_test = train_test_split(data[["nboat", "moonlight", "high", 'plankton5']], data[["Mantas"]], test_size=0.2, shuffle=True)
 
 pois = PoissonRegressor()
@@ -72,6 +71,7 @@ error = np.subtract(y_test, y_pred)
 print ("error:" ,error.mean())
 print ('Summary: ',pois_reg.summary())
 
+# plot for goodness of fit 
 
 plt.plot(error)
 plt.xlabel('Residuals')
